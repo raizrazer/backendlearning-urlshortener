@@ -34,11 +34,13 @@ app.post("/api/shorturl", (req, res) => {
   const urlToShorten = req.body.url.replace(/\/$/, "");
   let cleanUrlToShorten = "";
   if (httpsRegex.test(urlToShorten)) {
-    cleanUrlToShorten = urlToShorten.replace(httpsRegex, "");
-    // console.log("Contains https", cleanUrlToShorten);
+    cleanUrlToShorten = urlToShorten
+      .replace(httpsRegex, "")
+      .replace(/\/.*/, "");
+    console.log("Contains https", cleanUrlToShorten);
   } else if (httpRegex.test(urlToShorten)) {
-    cleanUrlToShorten = urlToShorten.replace(httpRegex, "");
-    // console.log("Contains http", cleanUrlToShorten);
+    cleanUrlToShorten = urlToShorten.replace(httpRegex, "").replace(/\/.*/, "");
+    console.log("Contains http", cleanUrlToShorten);
   } else {
     return res.json({ error: "invalid url" });
   }
