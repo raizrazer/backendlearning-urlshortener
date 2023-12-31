@@ -26,12 +26,24 @@ app.get("/api/hello", function (req, res) {
 });
 
 const shortenedURLFile = "shortURLsFile.txt";
+const httpsRegex = /^https:\/\//;
+const httpRegex = /^http:\/\//;
 // API to covert the given URL to shorturl
 app.post("/api/shorturl", (req, res) => {
   // Variable for the URL which needs to be shortened
   const urlToShorten = req.body.url;
+  let cleanUrlToShorten = "";
+  if (httpsRegex.test(urlToShorten)) {
+    cleanUrlToShorten = urlToShorten.replace(httpsRegex, "").replace(/\//, "");
+    // console.log("Contains https", cleanUrlToShorten);
+  } else if (httpRegex.test(urlToShorten)) {
+    cleanUrlToShorten = urlToShorten.replace(httpRegex, "").replace(/\//, "");
+    // console.log("Contains http", cleanUrlToShorten);
+  } else {
+    return res.json({ error: "invalid url" });
+  }
   // Verfiying if the validity of the URL Given above.
-  dns.lookup(urlToShorten, (err, address, family) => {
+  dns.lookup(cleanUrlToShorten, (err, address, family) => {
     // If the URL provided is Invalid
     if (err) return res.json({ error: "Invalid Hostname" });
     // If the URL provided is Valid
