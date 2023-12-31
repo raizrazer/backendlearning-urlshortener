@@ -31,13 +31,13 @@ const httpRegex = /^http:\/\//;
 // API to covert the given URL to shorturl
 app.post("/api/shorturl", (req, res) => {
   // Variable for the URL which needs to be shortened
-  const urlToShorten = req.body.url;
+  const urlToShorten = req.body.url.replace(/\/$/, "");
   let cleanUrlToShorten = "";
   if (httpsRegex.test(urlToShorten)) {
-    cleanUrlToShorten = urlToShorten.replace(httpsRegex, "").replace(/\//, "");
+    cleanUrlToShorten = urlToShorten.replace(httpsRegex, "");
     // console.log("Contains https", cleanUrlToShorten);
   } else if (httpRegex.test(urlToShorten)) {
-    cleanUrlToShorten = urlToShorten.replace(httpRegex, "").replace(/\//, "");
+    cleanUrlToShorten = urlToShorten.replace(httpRegex, "");
     // console.log("Contains http", cleanUrlToShorten);
   } else {
     return res.json({ error: "invalid url" });
